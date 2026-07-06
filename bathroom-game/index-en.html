@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<meta name="screen-orientation" content="portrait" />
+<meta name="x5-orientation" content="portrait" />
 <title>💩 Poop Catch</title>
 <style>
   :root {
@@ -25,6 +27,22 @@
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+  /* Force a portrait layout even if the device is physically rotated to
+     landscape (common on Android when auto-rotate is on). Rotates the
+     whole page -90deg and re-maps the viewport so it still fills the
+     screen as portrait, without needing the Fullscreen/Orientation APIs. */
+  @media screen and (orientation: landscape) {
+    html {
+      transform: rotate(-90deg);
+      transform-origin: left top;
+      width: 100vh;
+      height: 100vw;
+      overflow: hidden;
+      position: absolute;
+      top: 100%;
+      left: 0;
+    }
   }
   #stage {
     position: relative;
@@ -141,6 +159,41 @@
     z-index: 5;
     pointer-events: none;
   }
+  #controlBar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 92px;
+    padding: 0 0 14px;
+    z-index: 8;
+    touch-action: none;
+  }
+  #controlTrack {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,0.08);
+    border-top: 2px solid rgba(255,255,255,0.18);
+    box-sizing: border-box;
+  }
+  #controlThumb {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 60px;
+    height: 60px;
+    margin-left: -30px;
+    margin-top: -30px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #ffcf5c, #ffab3d);
+    box-shadow: 0 4px 0 #b6741a, 0 8px 14px rgba(0,0,0,.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    pointer-events: none;
+  }
 </style>
 </head>
 <body>
@@ -161,7 +214,7 @@
       <div class="sub">
         Catch falling <b>💩</b> with your toilet to score!<br/>
         Dodge <b>🦠 germs</b>, and grab <b>🧻</b> to heal!<br/>
-        Drag left and right on the screen to move.
+        Drag the bar at the bottom to move.
       </div>
       <button id="startBtn">Start</button>
       <div class="label" id="bestLabel">Best score 0</div>
@@ -174,7 +227,13 @@
       <button id="retryBtn">Play Again</button>
     </div>
 
-    <div id="footer-note">Drag with one hand to move</div>
+    <div id="footer-note">Drag the bar below to move</div>
+
+    <div id="controlBar">
+      <div id="controlTrack">
+        <div id="controlThumb">🚽</div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -193,6 +252,10 @@
   const newBestEl = document.getElementById('newBest');
   const startBtn = document.getElementById('startBtn');
   const retryBtn = document.getElementById('retryBtn');
+  const controlBar = document.getElementById('controlBar');
+  const controlThumb = document.getElementById('controlThumb');
+
+  const BAR_H = 92; // reserved height for the bottom control bar
 
   const BEST_KEY = 'poopCatchBest';
   let best = Number(localStorage.getItem(BEST_KEY) || 0);
@@ -201,7 +264,7 @@
 
   let W, H, DPR;
   function resize() {
-    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    DPR = Math.min(window.devicePixelRatio || 1, 3);
     W = stage.clientWidth;
     H = stage.clientHeight;
     canvas.width = W * DPR;
@@ -212,10 +275,10 @@
   resize();
 
   const ITEM_TYPES = {
-    poop:  { emoji: '💩', score: 10, weight: 58 },
-    paper: { emoji: '🧻', score: 5,  weight: 14, heal: true },
-    star:  { emoji: '⭐', score: 40, weight: 8  },
-    bug:   { emoji: '🦠', score: 0,  weight: 20, bad: true },
+    poop:  { emoji: '💩', score: 10, weight: 54 },
+    paper: { emoji: '🧻', score: 5,  weight: 13, heal: true },
+    star:  { emoji: '⭐', score: 40, weight: 7  },
+    bug:   { emoji: '🦠', score: 0,  weight: 26, bad: true },
   };
   const TYPE_LIST = Object.keys(ITEM_TYPES);
 
@@ -233,7 +296,7 @@
 
   function resetGame() {
     player = { x: W / 2, y: 0, w: 62, h: 46, targetX: W / 2 };
-    player.y = H - player.h - 18;
+    player.y = H - BAR_H - player.h - 14;
     items = [];
     particles = [];
     score = 0;
@@ -305,8 +368,8 @@
     elapsed += dt;
 
     // difficulty ramp
-    spawnInterval = Math.max(0.32, 0.95 - elapsed * 0.012);
-    fallSpeed = 150 + elapsed * 6.5;
+    spawnInterval = Math.max(0.28, 0.95 - elapsed * 0.015);
+    fallSpeed = 150 + elapsed * 8;
 
     // player follows drag with smoothing
     player.targetX = dragX;
@@ -441,6 +504,9 @@
       ctx.textAlign = 'center';
       ctx.fillText('Combo x' + combo, player.x, player.y - 10);
     }
+
+    // keep the bottom-bar handle in sync with the toilet's position
+    controlThumb.style.left = player.x + 'px';
   }
 
   function gameOver() {
@@ -471,12 +537,16 @@
     return clientX - rect.left;
   }
 
-  stage.addEventListener('pointerdown', (e) => {
+  // Movement is controlled from the bottom bar only, so a dragging finger
+  // never covers the toilet sprite up in the play field.
+  controlBar.addEventListener('pointerdown', (e) => {
     dragX = pointerToX(e.clientX);
+    e.preventDefault();
   });
-  stage.addEventListener('pointermove', (e) => {
+  controlBar.addEventListener('pointermove', (e) => {
     if (e.buttons > 0 || e.pointerType === 'touch') {
       dragX = pointerToX(e.clientX);
+      e.preventDefault();
     }
   });
 
@@ -487,7 +557,7 @@
   });
 
   // init idle state so canvas isn't blank behind start screen
-  player = { x: W / 2, y: H - 64, w: 62, h: 46 };
+  player = { x: W / 2, y: H - BAR_H - 64, w: 62, h: 46 };
   items = [];
   particles = [];
   requestAnimationFrame(loop);
