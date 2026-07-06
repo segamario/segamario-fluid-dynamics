@@ -51,12 +51,67 @@
     max-width: 560px;
     margin: 0 auto;
     background: linear-gradient(180deg, #4b3b74 0%, #2f2450 60%, #1f1836 100%);
+    overflow: hidden;
   }
-  canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-    touch-action: none;
+  /* Falling items and the toilet are plain DOM elements (not canvas).
+     Many Android browsers don't render color emoji glyphs inside
+     <canvas> fillText and silently fall back to a near-invisible
+     monochrome silhouette; regular text/DOM rendering always uses the
+     system's real color emoji font, so it works everywhere. */
+  #playfield {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    overflow: hidden;
+    pointer-events: none;
+    background-image: repeating-linear-gradient(
+      rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 1px,
+      transparent 1px, transparent 40px
+    );
+  }
+  .item {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    will-change: transform;
+  }
+  .particle {
+    position: absolute;
+    left: 0;
+    top: 0;
+    line-height: 1;
+    pointer-events: none;
+    will-change: transform, opacity;
+  }
+  #playerEl {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 62px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    line-height: 1;
+    will-change: transform;
+  }
+  #comboEl {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform: translate(-50%, -100%);
+    color: #ffe066;
+    font-weight: 900;
+    font-size: 14px;
+    white-space: nowrap;
+    text-shadow: 0 2px 4px rgba(0,0,0,.5);
+    z-index: 6;
   }
   #hud {
     position: absolute;
@@ -140,15 +195,6 @@
     transform: translateY(4px);
     box-shadow: 0 2px 0 #b6741a, 0 4px 10px rgba(0,0,0,.35);
   }
-  .combo {
-    position: absolute;
-    color: #ffe066;
-    font-weight: 900;
-    font-size: 16px;
-    pointer-events: none;
-    z-index: 6;
-    text-shadow: 0 2px 4px rgba(0,0,0,.5);
-  }
   #footer-note {
     position: absolute;
     bottom: 8px;
@@ -164,8 +210,8 @@
     left: 0;
     right: 0;
     bottom: 0;
-    height: 92px;
-    padding: 0 0 14px;
+    height: calc(92px + env(safe-area-inset-bottom, 0px));
+    padding: 0 0 calc(14px + env(safe-area-inset-bottom, 0px));
     z-index: 8;
     touch-action: none;
   }
@@ -199,7 +245,10 @@
 <body>
 <div id="wrap">
   <div id="stage">
-    <canvas id="c"></canvas>
+    <div id="playfield">
+      <div id="playerEl">🚽</div>
+      <div id="comboEl"></div>
+    </div>
 
     <div id="hud">
       <div>
@@ -239,9 +288,10 @@
 
 <script>
 (function () {
-  const canvas = document.getElementById('c');
-  const ctx = canvas.getContext('2d');
   const stage = document.getElementById('stage');
+  const playfield = document.getElementById('playfield');
+  const playerEl = document.getElementById('playerEl');
+  const comboEl = document.getElementById('comboEl');
   const scoreEl = document.getElementById('score');
   const bestEl = document.getElementById('best');
   const bestLabel = document.getElementById('bestLabel');
@@ -255,23 +305,26 @@
   const controlBar = document.getElementById('controlBar');
   const controlThumb = document.getElementById('controlThumb');
 
-  const BAR_H = 92; // reserved height for the bottom control bar
+  let BAR_H = 92; // reserved height for the bottom control bar (recomputed on resize)
 
   const BEST_KEY = 'poopCatchBest';
   let best = Number(localStorage.getItem(BEST_KEY) || 0);
   bestEl.textContent = 'Best ' + best;
   bestLabel.textContent = 'Best score ' + best;
 
-  let W, H, DPR;
+  let W, H;
   function resize() {
-    DPR = Math.min(window.devicePixelRatio || 1, 3);
     W = stage.clientWidth;
     H = stage.clientHeight;
-    canvas.width = W * DPR;
-    canvas.height = H * DPR;
-    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    BAR_H = controlBar.getBoundingClientRect().height || BAR_H;
+    playfield.style.width = W + 'px';
+    playfield.style.height = Math.max(0, H - BAR_H) + 'px';
   }
   window.addEventListener('resize', resize);
+  window.addEventListener('orientationchange', () => setTimeout(resize, 50));
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', resize);
+  }
   resize();
 
   const ITEM_TYPES = {
@@ -292,13 +345,12 @@
     return TYPE_LIST[0];
   }
 
-  let player, items, particles, score, lives, combo, comboTimer, elapsed, spawnTimer, spawnInterval, fallSpeed, running, dragX;
+  let player, items, score, lives, combo, comboTimer, elapsed, spawnTimer, spawnInterval, fallSpeed, running, dragX;
 
   function resetGame() {
-    player = { x: W / 2, y: 0, w: 62, h: 46, targetX: W / 2 };
-    player.y = H - BAR_H - player.h - 14;
+    player = { x: W / 2, y: H - BAR_H - 46 - 14, w: 62, h: 46, targetX: W / 2 };
+    items.forEach(it => it.el.remove());
     items = [];
-    particles = [];
     score = 0;
     lives = 3;
     combo = 0;
@@ -309,6 +361,7 @@
     fallSpeed = 150;
     running = true;
     dragX = player.x;
+    comboEl.textContent = '';
     updateHud();
   }
 
@@ -323,8 +376,15 @@
     const type = pickType();
     const def = ITEM_TYPES[type];
     const size = 34 + Math.random() * 10;
+    const el = document.createElement('div');
+    el.className = 'item';
+    el.style.width = size + 'px';
+    el.style.height = size + 'px';
+    el.style.fontSize = size + 'px';
+    el.textContent = def.emoji;
+    playfield.appendChild(el);
     items.push({
-      type, def,
+      type, def, el,
       x: 24 + Math.random() * (W - 48),
       y: -size,
       size,
@@ -334,22 +394,41 @@
     });
   }
 
-  function spawnParticles(x, y, emoji, count, color) {
+  // One-shot catch/miss effects, animated with the Web Animations API so
+  // they clean themselves up (no manual per-frame particle bookkeeping,
+  // and it's real DOM text so emoji always render in color).
+  function burst(x, y, emoji, count) {
     for (let i = 0; i < count; i++) {
-      particles.push({
-        x, y, emoji,
-        vx: (Math.random() - 0.5) * 180,
-        vy: -Math.random() * 160 - 40,
-        life: 0.6 + Math.random() * 0.3,
-        t: 0,
-        size: 14 + Math.random() * 10,
-        color,
-      });
+      const el = document.createElement('div');
+      el.className = 'particle';
+      el.style.fontSize = (14 + Math.random() * 10) + 'px';
+      el.textContent = emoji;
+      playfield.appendChild(el);
+      const dx = (Math.random() - 0.5) * 90;
+      const dy = -(Math.random() * 80 + 20);
+      el.style.transform = `translate(${x}px, ${y}px)`;
+      const anim = el.animate([
+        { transform: `translate(${x}px, ${y}px)`, opacity: 1 },
+        { transform: `translate(${x + dx}px, ${y + dy}px)`, opacity: 0 },
+      ], { duration: 650 + Math.random() * 250, easing: 'ease-out' });
+      anim.onfinish = () => el.remove();
     }
   }
 
   function floatText(x, y, text, color) {
-    particles.push({ x, y, text, vx: 0, vy: -60, life: 0.7, t: 0, isText: true, color });
+    const el = document.createElement('div');
+    el.className = 'particle';
+    el.style.fontWeight = '800';
+    el.style.fontSize = '16px';
+    el.style.color = color;
+    el.textContent = text;
+    playfield.appendChild(el);
+    el.style.transform = `translate(${x}px, ${y}px)`;
+    const anim = el.animate([
+      { transform: `translate(${x}px, ${y}px)`, opacity: 1 },
+      { transform: `translate(${x}px, ${y - 46}px)`, opacity: 0 },
+    ], { duration: 700, easing: 'ease-out' });
+    anim.onfinish = () => el.remove();
   }
 
   let lastTime = 0;
@@ -359,7 +438,7 @@
     lastTime = ts;
 
     if (running) update(dt);
-    draw();
+    render();
 
     requestAnimationFrame(loop);
   }
@@ -370,6 +449,10 @@
     // difficulty ramp
     spawnInterval = Math.max(0.28, 0.95 - elapsed * 0.015);
     fallSpeed = 150 + elapsed * 8;
+
+    // keep the toilet pinned just above the control bar even if the bar's
+    // measured height changes (e.g. a delayed viewport re-measure)
+    player.y = H - BAR_H - player.h - 14;
 
     // player follows drag with smoothing
     player.targetX = dragX;
@@ -403,12 +486,13 @@
         it.x >= px - halfW && it.x <= px + halfW;
 
       if (caught) {
+        it.el.remove();
         items.splice(i, 1);
         if (it.def.bad) {
           lives -= 1;
           combo = 0;
           comboTimer = 0;
-          spawnParticles(it.x, it.y, '🦠', 6);
+          burst(it.x, it.y, '🦠', 6);
           floatText(it.x, it.y - 10, '-1', '#ff6b6b');
           if (navigator.vibrate) navigator.vibrate(80);
           updateHud();
@@ -423,14 +507,15 @@
           const mult = 1 + Math.floor(combo / 5) * 0.5;
           const gained = Math.round(it.def.score * mult);
           score += gained;
-          spawnParticles(it.x, it.y, it.def.emoji, 5);
+          burst(it.x, it.y, it.def.emoji, 5);
           floatText(it.x, it.y - 10, '+' + gained + (combo >= 5 ? ' 🔥x' + (1 + Math.floor(combo/5)*0.5) : ''), '#ffe066');
           updateHud();
         }
         continue;
       }
 
-      if (it.y - it.size > H + 20) {
+      if (it.y - it.size > H - BAR_H + 20) {
+        it.el.remove();
         items.splice(i, 1);
         if (!it.def.bad) {
           combo = 0;
@@ -438,71 +523,22 @@
         }
       }
     }
-
-    // update particles
-    for (let i = particles.length - 1; i >= 0; i--) {
-      const p = particles[i];
-      p.t += dt;
-      p.x += p.vx * dt;
-      p.y += p.vy * dt;
-      p.vy += 260 * dt;
-      if (p.t >= p.life) particles.splice(i, 1);
-    }
   }
 
-  function draw() {
-    ctx.clearRect(0, 0, W, H);
-
-    // floor tile line
-    ctx.fillStyle = 'rgba(255,255,255,0.05)';
-    for (let y = 0; y < H; y += 40) {
-      ctx.fillRect(0, y, W, 1);
-    }
-
-    // items
+  function render() {
     for (const it of items) {
-      ctx.save();
-      ctx.translate(it.x, it.y);
-      ctx.rotate(it.rot);
-      ctx.font = it.size + 'px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(it.def.emoji, 0, 0);
-      ctx.restore();
+      const half = it.size / 2;
+      it.el.style.transform =
+        `translate(${it.x - half}px, ${it.y - half}px) rotate(${it.rot}rad)`;
     }
 
-    // particles
-    for (const p of particles) {
-      const a = 1 - p.t / p.life;
-      ctx.globalAlpha = Math.max(a, 0);
-      if (p.isText) {
-        ctx.fillStyle = p.color;
-        ctx.font = '800 16px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(p.text, p.x, p.y);
-      } else {
-        ctx.font = p.size + 'px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(p.emoji, p.x, p.y);
-      }
-      ctx.globalAlpha = 1;
-    }
+    playerEl.style.transform = `translate(${player.x - player.w / 2}px, ${player.y}px)`;
 
-    // player (toilet)
-    ctx.save();
-    ctx.translate(player.x, player.y + player.h / 2);
-    ctx.font = '48px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText('🚽', 0, 0);
-    ctx.restore();
-
-    // combo indicator
     if (combo >= 3) {
-      ctx.fillStyle = '#ffe066';
-      ctx.font = '800 14px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText('Combo x' + combo, player.x, player.y - 10);
+      comboEl.textContent = 'Combo x' + combo;
+      comboEl.style.transform = `translate(${player.x}px, ${player.y - 10}px)`;
+    } else {
+      comboEl.textContent = '';
     }
 
     // keep the bottom-bar handle in sync with the toilet's position
@@ -538,17 +574,41 @@
   }
 
   // Movement is controlled from the bottom bar only, so a dragging finger
-  // never covers the toilet sprite up in the play field.
+  // never covers the toilet sprite up in the play field. Pointer capture
+  // keeps the drag tracking even if the finger wanders slightly off the
+  // bar's narrow strip, which is what real thumbs do in one-handed use.
+  let activePointerId = null;
   controlBar.addEventListener('pointerdown', (e) => {
     dragX = pointerToX(e.clientX);
+    activePointerId = e.pointerId;
+    if (controlBar.setPointerCapture) {
+      try { controlBar.setPointerCapture(e.pointerId); } catch (err) {}
+    }
     e.preventDefault();
   });
   controlBar.addEventListener('pointermove', (e) => {
-    if (e.buttons > 0 || e.pointerType === 'touch') {
+    if (activePointerId !== null && e.pointerId !== activePointerId) return;
+    if (activePointerId !== null || e.buttons > 0 || e.pointerType === 'touch') {
       dragX = pointerToX(e.clientX);
       e.preventDefault();
     }
   });
+  function releasePointer(e) {
+    if (e.pointerId === activePointerId) activePointerId = null;
+  }
+  controlBar.addEventListener('pointerup', releasePointer);
+  controlBar.addEventListener('pointercancel', releasePointer);
+
+  // Fallback for environments where Pointer Events behave inconsistently
+  // (older Android WebViews embedded in apps, some itch.io app wrappers).
+  controlBar.addEventListener('touchstart', (e) => {
+    if (e.touches[0]) dragX = pointerToX(e.touches[0].clientX);
+    e.preventDefault();
+  }, { passive: false });
+  controlBar.addEventListener('touchmove', (e) => {
+    if (e.touches[0]) dragX = pointerToX(e.touches[0].clientX);
+    e.preventDefault();
+  }, { passive: false });
 
   window.addEventListener('keydown', (e) => {
     if (!running) return;
@@ -556,10 +616,11 @@
     if (e.key === 'ArrowRight' || e.key === 'd') dragX = Math.min(W, dragX + 30);
   });
 
-  // init idle state so canvas isn't blank behind start screen
+  // init idle state so the field isn't blank behind the start screen
   player = { x: W / 2, y: H - BAR_H - 64, w: 62, h: 46 };
   items = [];
-  particles = [];
+  dragX = player.x;
+  render();
   requestAnimationFrame(loop);
 })();
 </script>
