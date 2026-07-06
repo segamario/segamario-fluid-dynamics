@@ -1,0 +1,87 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:2000px; height:2000px; overflow:hidden; }
+  body {
+    font-family: 'Liberation Sans', Helvetica, Arial, sans-serif;
+    background: linear-gradient(160deg, #EAF4FB 0%, #F6EEFB 55%, #FCEFF5 100%);
+    position: relative;
+  }
+  .blob { position:absolute; border-radius:50%; opacity:.5; }
+  .b1 { width:420px; height:420px; background:#FBE192; top:-150px; left:1400px; }
+  .b2 { width:360px; height:360px; background:#F4AFC9; bottom:-120px; left:-100px; }
+
+  .eyebrow {
+    position:absolute; top:100px; left:0; right:0; text-align:center;
+    font-size:24px; letter-spacing:4px; color:#6aa0c9; font-weight:bold;
+  }
+  .title {
+    position:absolute; top:140px; left:0; right:0; text-align:center;
+    font-family: Georgia, 'Liberation Serif', serif;
+    font-size:84px; color:#4A4A4A; font-weight:bold;
+  }
+
+  .frame {
+    position:absolute; top:300px; left:170px; width:1660px; height:760px;
+    background:#fff; border-radius:24px; box-shadow:0 30px 70px rgba(90,70,90,.16); overflow:hidden;
+  }
+  .frame-head { background:#D6E8F7; padding:22px 34px; font-size:26px; color:#2b5c82; font-weight:bold; }
+  table { width:100%; border-collapse:collapse; }
+  th { background:#F4F8FC; color:#4A4A4A; font-size:20px; padding:14px 18px; text-align:left; border-bottom:2px solid #D6E8F7; }
+  td { font-size:20px; color:#4A4A4A; padding:14px 18px; border-bottom:1px solid #EFF3F7; }
+  tr:nth-child(even) td { background:#FBFDFE; }
+  .warn td { background:#F9D6D6 !important; color:#B33A3A; font-weight:bold; }
+  .ok { color:#2F7A4D; font-weight:bold; }
+
+  .callouts {
+    position:absolute; top:1120px; left:170px; right:170px; bottom:110px;
+    display:flex; gap:34px;
+  }
+  .callout {
+    flex:1; background:#fff; border-radius:22px; padding:34px 28px;
+    box-shadow:0 16px 36px rgba(90,70,90,.10);
+  }
+  .callout .emoji { font-size:46px; }
+  .callout h4 { font-size:26px; color:#4A4A4A; margin-top:12px; }
+  .callout p { font-size:19px; color:#7a7a7a; margin-top:8px; line-height:1.4; }
+</style></head>
+<body>
+  <div class="blob b1"></div><div class="blob b2"></div>
+
+  <div class="eyebrow">SMART BY DESIGN</div>
+  <div class="title">It Watches the Numbers For You</div>
+
+  <div class="frame">
+    <div class="frame-head">🍼 Newborn Daily Care Log — auto-flags for peace of mind</div>
+    <table>
+      <tr><th>Day</th><th>Date</th><th>Feedings</th><th>Wet Diapers</th><th>Temp (°F)</th><th>Notes</th></tr>
+      <tr><td>4</td><td>2026-08-05</td><td>8</td><td class="ok">7</td><td>98.4</td><td>Feeding well</td></tr>
+      <tr><td>5</td><td>2026-08-06</td><td>7</td><td>5</td><td>98.6</td><td>Watching hydration</td></tr>
+      <tr class="warn"><td>6</td><td>2026-08-07</td><td>6</td><td>4</td><td>100.7</td><td>⚠ Call pediatrician — fever</td></tr>
+      <tr><td>7</td><td>2026-08-08</td><td>8</td><td class="ok">7</td><td>98.5</td><td>Back to normal</td></tr>
+    </table>
+  </div>
+
+  <div class="callouts">
+    <div class="callout">
+      <div class="emoji">🗓️</div>
+      <h4>Dates auto-fill</h4>
+      <p>Enter your due date or baby's birth date once — every tab calculates its own dates for you.</p>
+    </div>
+    <div class="callout">
+      <div class="emoji">🚦</div>
+      <h4>Built-in health flags</h4>
+      <p>Fever, low wet-diaper counts, and low mood are automatically highlighted so nothing slips by.</p>
+    </div>
+    <div class="callout">
+      <div class="emoji">☑️</div>
+      <h4>Real checkboxes &amp; dropdowns</h4>
+      <p>No typing "yes/no" — just click. Every checklist and log uses native Google Sheets checkboxes.</p>
+    </div>
+    <div class="callout">
+      <div class="emoji">📱</div>
+      <h4>Works anywhere</h4>
+      <p>Google Sheets on your phone, tablet, or laptop — no app to buy, no subscription, ever.</p>
+    </div>
+  </div>
+</body></html>
