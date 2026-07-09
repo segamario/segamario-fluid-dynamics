@@ -15,15 +15,27 @@ bought once as a baby-shower gift and used continuously for two years — that's
 to lead with in the listing photos and description.
 
 ## How to produce the sellable master
-1. Open `build_planner.gs` in a blank Google Sheet (Extensions > Apps Script), paste, run
-   `buildPregnancyToToddlerPlanner`, authorize.
-2. Review the generated tabs, tweak colors/wording to taste (all pastel hexes are in the
-   `PASTEL` object at the top of the script if you want to adjust the palette).
-3. File > Share > General access > "Anyone with the link" > Viewer. This is the link you sell —
-   buyers use File > Make a copy to get their own editable version.
-4. Take screenshots of each tab (Welcome, Prenatal Health with its chart area, Newborn Daily
-   Log, Dashboard with the 3 charts) for the Etsy listing photos — these sell the product far
-   more than the description text does.
+Two ways to build it — either works, both live in this folder:
+1. `build_planner.gs` — Google Apps Script, paste into Extensions > Apps Script on a blank
+   sheet and run `buildPregnancyToToddlerPlanner`.
+2. `build_planner_xlsx.py` — openpyxl, produces `Bump_to_Toddler_Planner.xlsx` locally; upload
+   to Drive and File > Save as Google Sheets to convert. **This is the version actually in use.**
+
+**Master sheet (live):**
+https://docs.google.com/spreadsheets/d/1FBUiBwmqy3yc18-WGoC_S6V1wuKqc-E06j3stGpsbuM/edit?usp=sharing
+— stored in Drive folder "Little Milestone Co - Bump to Toddler Planner", sharing already set to
+Anyone with the link / Viewer. This is the exact link baked into
+`delivery-pdf/How-To-Get-Your-Planner.pdf`.
+
+Remaining one-time setup on the master (xlsx route only, ~10 columns): select each
+"Done"/"Achieved"/"Given" column and use Insert > Checkbox so they render as clickable
+checkboxes instead of TRUE/FALSE text — see the exact column list in the chat history / repeat
+below. Also spot-check that the Growth Tracker and Dashboard charts came through the xlsx→Sheets
+conversion correctly.
+
+Take screenshots of each tab (Welcome, Prenatal Health with its chart area, Newborn Daily
+Log, Dashboard with the 3 charts) for the Etsy listing photos — these sell the product far
+more than the description text does.
 
 ## Etsy listing copy
 
