@@ -1,0 +1,64 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:2000px; height:2000px; overflow:hidden; }
+  body {
+    font-family: 'Liberation Sans', Helvetica, Arial, sans-serif;
+    background: linear-gradient(135deg, #FDE9F0 0%, #F3E9FB 45%, #E3F3EC 100%);
+    position: relative;
+  }
+  .blob { position:absolute; border-radius:50%; opacity:.55; }
+  .b1 { width:480px; height:480px; background:#FBE192; top:-140px; left:-120px; }
+  .b2 { width:420px; height:420px; background:#AFD3EF; bottom:-120px; right:-100px; }
+
+  .badge {
+    position:absolute; top:80px; left:50%; transform:translateX(-50%);
+    background:#4A4A4A; color:#fff; letter-spacing:3px; font-size:20px; font-weight:bold;
+    padding:14px 38px; border-radius:40px;
+  }
+  .title {
+    position:absolute; top:150px; left:0; right:0; text-align:center;
+    font-family: Georgia, 'Liberation Serif', serif; font-size:96px; color:#4A4A4A; font-weight:bold;
+  }
+  .subtitle {
+    position:absolute; top:260px; left:0; right:0; text-align:center;
+    font-size:32px; color:#5B5B5B;
+  }
+
+  .fan { position:absolute; top:360px; left:0; right:0; height:1180px; }
+  .card { position:absolute; width:460px; border-radius:16px; box-shadow:0 30px 60px rgba(90,70,90,.22); overflow:hidden; border:8px solid #fff; }
+  .card img { width:100%; display:block; }
+  .c1 { left:210px;  top:60px;  transform:rotate(-9deg); }
+  .c2 { left:660px;  top:0px;   transform:rotate(-2deg); z-index:2; }
+  .c3 { left:1110px; top:30px;  transform:rotate(6deg); }
+  .c4 { left:1500px; top:130px; transform:rotate(12deg); }
+
+  .badges { position:absolute; top:1580px; left:0; right:0; display:flex; justify-content:center; gap:36px; }
+  .fbadge { width:360px; background:#fff; border-radius:22px; padding:28px 20px; text-align:center; box-shadow:0 18px 40px rgba(90,70,90,.14); }
+  .fbadge .emoji { font-size:52px; }
+  .fbadge .label { font-size:24px; color:#4A4A4A; font-weight:bold; margin-top:8px; }
+
+  .ribbon { position:absolute; bottom:60px; left:0; right:0; text-align:center; font-size:28px; color:#4A4A4A; font-weight:bold; }
+  .ribbon .sep { color:#E888AC; margin:0 16px; }
+</style></head>
+<body>
+  <div class="blob b1"></div><div class="blob b2"></div>
+  <div class="badge">PRINTABLE KEEPSAKE BOOK</div>
+  <div class="title">My First Year</div>
+  <div class="subtitle">A Baby Memory &amp; Growth Book — print, fill in, treasure forever</div>
+
+  <div class="fan">
+    <div class="card c1"><img src="pg_family-tree.png"></div>
+    <div class="card c2"><img src="pg_cover.png"></div>
+    <div class="card c3"><img src="pg_month4.png"></div>
+    <div class="card c4"><img src="pg_handprints.png"></div>
+  </div>
+
+  <div class="badges">
+    <div class="fbadge"><div class="emoji">📖</div><div class="label">24 Pages</div></div>
+    <div class="fbadge"><div class="emoji">🖨️</div><div class="label">Print &amp; Fill In</div></div>
+    <div class="fbadge"><div class="emoji">🖐️</div><div class="label">Hand &amp; Footprint Page</div></div>
+  </div>
+
+  <div class="ribbon">Instant Download<span class="sep">•</span>PDF File<span class="sep">•</span>Perfect Baby Shower Gift</div>
+</body></html>
