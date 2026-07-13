@@ -1,0 +1,265 @@
+<title>Little Milestone Co. — Studio Dashboard</title>
+<style>
+  :root {
+    --ivory: #FBF7F4;
+    --card: #FFFFFF;
+    --ink: #3D3540;
+    --mauve: #8B7F87;
+    --berry: #B84870;
+    --berry-soft: #C6537C;
+    --line: #EAE0E4;
+    --pink: #F4AFC9;
+    --blue: #AFD3EF;
+    --mint: #AEE4C9;
+    --lavender: #C9B8ED;
+    --yellow: #FBE192;
+    --peach: #F8C39E;
+    --live-bg: #DFF3E3;
+    --live-text: #2F7A4D;
+    --shadow: 0 1px 2px rgba(61,53,64,.05), 0 8px 24px rgba(61,53,64,.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ivory: #201C23; --card: #2A242D; --ink: #F3ECEF; --mauve: #A79AA3;
+      --berry: #F0A8C4; --berry-soft: #F0A8C4; --line: #3A323D;
+      --live-bg: #24392C; --live-text: #8FE0A8;
+      --shadow: 0 1px 2px rgba(0,0,0,.25), 0 8px 24px rgba(0,0,0,.3);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ivory: #201C23; --card: #2A242D; --ink: #F3ECEF; --mauve: #A79AA3;
+    --berry: #F0A8C4; --berry-soft: #F0A8C4; --line: #3A323D;
+    --live-bg: #24392C; --live-text: #8FE0A8;
+    --shadow: 0 1px 2px rgba(0,0,0,.25), 0 8px 24px rgba(0,0,0,.3);
+  }
+  :root[data-theme="light"] {
+    --ivory: #FBF7F4; --card: #FFFFFF; --ink: #3D3540; --mauve: #8B7F87;
+    --berry: #B84870; --berry-soft: #C6537C; --line: #EAE0E4;
+    --live-bg: #DFF3E3; --live-text: #2F7A4D;
+    --shadow: 0 1px 2px rgba(61,53,64,.05), 0 8px 24px rgba(61,53,64,.06);
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; background: var(--ivory); color: var(--ink);
+    font-family: -apple-system, "Segoe UI", "Liberation Sans", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  body { padding: 64px 24px 100px; }
+  .wrap { max-width: 980px; margin: 0 auto; }
+
+  h1, h2, h3 { font-family: Georgia, "Liberation Serif", serif; font-weight: 700; text-wrap: balance; margin: 0; }
+  .num { font-family: ui-monospace, "DejaVu Sans Mono", "Liberation Mono", monospace; font-variant-numeric: tabular-nums; }
+
+  a { color: var(--berry); }
+  a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
+    outline: 2px solid var(--berry); outline-offset: 3px; border-radius: 4px;
+  }
+
+  /* ---------- Identity strip ---------- */
+  .identity { display: flex; align-items: center; gap: 22px; margin-bottom: 56px; }
+  .identity img { width: 64px; height: 64px; border-radius: 50%; box-shadow: var(--shadow); flex: 0 0 auto; }
+  .identity .name { font-size: 26px; letter-spacing: .3px; }
+  .identity .tagline { font-size: 15px; color: var(--mauve); margin-top: 4px; }
+
+  /* ---------- Stat row ---------- */
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 64px; }
+  .stat { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; box-shadow: var(--shadow); }
+  .stat .v { font-size: 28px; font-weight: 700; }
+  .stat .l { font-size: 12.5px; color: var(--mauve); margin-top: 4px; letter-spacing: .2px; }
+
+  /* ---------- Section headers ---------- */
+  .section-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 22px; gap: 16px; flex-wrap: wrap; }
+  .section-head h2 { font-size: 22px; }
+  .section-head .sub { font-size: 14px; color: var(--mauve); }
+  section { margin-bottom: 68px; }
+
+  /* ---------- Product grid ---------- */
+  .products { display: grid; grid-template-columns: repeat(auto-fit, minmax(268px, 1fr)); gap: 20px; }
+  .product-card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); display: flex; flex-direction: column; }
+  .product-card img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; border-bottom: 1px solid var(--line); }
+  .product-body { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+  .product-title { font-family: Georgia, "Liberation Serif", serif; font-size: 18px; line-height: 1.3; }
+  .chip-row { display: flex; gap: 6px; flex-wrap: wrap; }
+  .chip { font-size: 11px; font-weight: 600; letter-spacing: .3px; padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
+  .chip.status-live { background: var(--live-bg); color: var(--live-text); }
+  .chip.fmt-sheet { background: var(--blue); color: #234; }
+  .chip.fmt-print { background: var(--peach); color: #432; }
+  .product-meta { display: flex; justify-content: space-between; align-items: baseline; margin-top: auto; padding-top: 8px; border-top: 1px dashed var(--line); }
+  .product-meta .price { font-size: 20px; font-weight: 700; }
+  .product-meta .pages { font-size: 13px; color: var(--mauve); }
+  .product-desc { font-size: 13.5px; color: var(--mauve); line-height: 1.5; }
+
+  /* ---------- Pipeline ---------- */
+  .pipeline { display: flex; gap: 0; overflow-x: auto; padding-bottom: 6px; }
+  .pstep { flex: 1 0 130px; position: relative; padding: 18px 16px 16px; }
+  .pstep:not(:last-child)::after {
+    content: ""; position: absolute; top: 26px; right: -6px; width: 12px; height: 1px; background: var(--line);
+  }
+  .pstep .n { font-family: Georgia, "Liberation Serif", serif; font-size: 13px; color: var(--berry-soft); font-weight: 700; }
+  .pstep .t { font-size: 13.5px; font-weight: 600; margin-top: 6px; line-height: 1.35; }
+  .pstep .d { font-size: 12px; color: var(--mauve); margin-top: 4px; line-height: 1.4; }
+
+  /* ---------- Palette reference ---------- */
+  .palette { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 28px; }
+  .swatch { text-align: left; }
+  .swatch .chip-color { width: 56px; height: 56px; border-radius: 12px; border: 1px solid var(--line); box-shadow: var(--shadow); }
+  .swatch .label { font-size: 11px; color: var(--mauve); margin-top: 6px; }
+  .swatch .hex { font-family: ui-monospace, "DejaVu Sans Mono", monospace; font-size: 11px; }
+
+  /* ---------- Roadmap ---------- */
+  .roadmap { border: 1px solid var(--line); border-radius: 14px; background: var(--card); box-shadow: var(--shadow); overflow: hidden; }
+  .rm-row { display: flex; align-items: center; gap: 14px; padding: 14px 20px; }
+  .rm-row + .rm-row { border-top: 1px solid var(--line); }
+  .rm-row .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--line); flex: 0 0 auto; }
+  .rm-row.rec .dot { background: var(--berry); }
+  .rm-row .rt { flex: 1; font-size: 14.5px; }
+  .rm-row .rd { font-size: 12.5px; color: var(--mauve); }
+  .rm-row .tag { font-size: 11px; font-weight: 600; color: var(--berry-soft); background: color-mix(in srgb, var(--berry-soft) 14%, transparent); padding: 3px 9px; border-radius: 20px; flex: 0 0 auto; }
+
+  footer { text-align: center; font-size: 12.5px; color: var(--mauve); margin-top: 80px; }
+
+  @media (max-width: 640px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    body { padding: 40px 16px 80px; }
+  }
+</style>
+
+<div class="wrap">
+
+  <div class="identity">
+    <img src="{{ICON_IMG}}" alt="Little Milestone Co. icon" />
+    <div>
+      <div class="name">Little Milestone Co.</div>
+      <div class="tagline">Sweet, simple planners for pregnancy through toddlerhood — studio dashboard</div>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="v num">3</div><div class="l">Products live</div></div>
+    <div class="stat"><div class="v num">49</div><div class="l">Tabs / pages built</div></div>
+    <div class="stat"><div class="v num">$8–12</div><div class="l">Price range</div></div>
+    <div class="stat"><div class="v num">39</div><div class="l">Tags across listings</div></div>
+  </div>
+
+  <section>
+    <div class="section-head">
+      <h2>Product catalog</h2>
+      <div class="sub">Everything currently for sale</div>
+    </div>
+    <div class="products">
+
+      <div class="product-card">
+        <img src="{{PLANNER_IMG}}" alt="Bump to Toddler Planner cover" />
+        <div class="product-body">
+          <div class="chip-row">
+            <span class="chip status-live">Live</span>
+            <span class="chip fmt-sheet">Google Sheets</span>
+          </div>
+          <div class="product-title">Bump to Toddler Planner</div>
+          <div class="product-desc">Pregnancy prep through age 2 — prenatal tracker, hospital bag, postpartum recovery, baby logs, growth chart, milestones, vaccinations, dashboard.</div>
+          <div class="product-meta">
+            <span class="price num">$12</span>
+            <span class="pages num">11 tabs</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <img src="{{BOOK_IMG}}" alt="My First Year memory book cover" />
+        <div class="product-body">
+          <div class="chip-row">
+            <span class="chip status-live">Live</span>
+            <span class="chip fmt-print">Printable PDF</span>
+          </div>
+          <div class="product-title">My First Year — Memory Book</div>
+          <div class="product-desc">Print-and-fill keepsake: birth story, family tree, 12 monthly check-ins, firsts, hand &amp; footprints, first birthday, letters to baby.</div>
+          <div class="product-meta">
+            <span class="price num">$10</span>
+            <span class="pages num">24 pages</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <img src="{{KIT_IMG}}" alt="Baby Shower Planning Kit cover" />
+        <div class="product-body">
+          <div class="chip-row">
+            <span class="chip status-live">Live</span>
+            <span class="chip fmt-print">Printable PDF</span>
+          </div>
+          <div class="product-title">Baby Shower Planning Kit</div>
+          <div class="product-desc">Host-facing planner: 8-week timeline, budget, guest &amp; gift tracker, vendor checklist, menu, decor, games, day-of schedule.</div>
+          <div class="product-meta">
+            <span class="price num">$8</span>
+            <span class="pages num">14 pages</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>Production system</h2>
+      <div class="sub">The repeatable pipeline every product follows</div>
+    </div>
+    <div class="pipeline">
+      <div class="pstep"><div class="n">01</div><div class="t">Idea &amp; positioning</div><div class="d">Buyer, differentiation vs. existing Etsy listings</div></div>
+      <div class="pstep"><div class="n">02</div><div class="t">Content outline</div><div class="d">Page/tab list, copy, checklist items</div></div>
+      <div class="pstep"><div class="n">03</div><div class="t">Build script</div><div class="d">Python — openpyxl for sheets, Playwright+HTML for print PDFs</div></div>
+      <div class="pstep"><div class="n">04</div><div class="t">Render &amp; QA</div><div class="d">Screenshot every page, fix layout bugs before shipping</div></div>
+      <div class="pstep"><div class="n">05</div><div class="t">Listing assets</div><div class="d">Hero + preview images from the same templates</div></div>
+      <div class="pstep"><div class="n">06</div><div class="t">Etsy copy</div><div class="d">Title, 13 tags, price, description</div></div>
+      <div class="pstep"><div class="n">07</div><div class="t">Publish</div><div class="d">Listing live, digital file wired up</div></div>
+    </div>
+
+    <div class="palette">
+      <div class="swatch"><div class="chip-color" style="background:var(--pink)"></div><div class="label">pink</div><div class="hex">#FBD8E5</div></div>
+      <div class="swatch"><div class="chip-color" style="background:var(--blue)"></div><div class="label">blue</div><div class="hex">#D6E8F7</div></div>
+      <div class="swatch"><div class="chip-color" style="background:var(--mint)"></div><div class="label">mint</div><div class="hex">#D9F2E6</div></div>
+      <div class="swatch"><div class="chip-color" style="background:var(--lavender)"></div><div class="label">lavender</div><div class="hex">#E6DFF7</div></div>
+      <div class="swatch"><div class="chip-color" style="background:var(--yellow)"></div><div class="label">yellow</div><div class="hex">#FFF3CE</div></div>
+      <div class="swatch"><div class="chip-color" style="background:var(--peach)"></div><div class="label">peach</div><div class="hex">#FDE3D3</div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>Next up</h2>
+      <div class="sub">Candidate SKUs, not yet built</div>
+    </div>
+    <div class="roadmap">
+      <div class="rm-row rec">
+        <div class="dot"></div>
+        <div class="rt">Toddler Potty Training Tracker (2–4y)</div>
+        <div class="rd num">Sheets</div>
+        <span class="tag">Recommended</span>
+      </div>
+      <div class="rm-row">
+        <div class="dot"></div>
+        <div class="rt">TTC / Pregnancy Prep Tracker</div>
+        <div class="rd num">Sheets</div>
+      </div>
+      <div class="rm-row">
+        <div class="dot"></div>
+        <div class="rt">Maternity Leave Return-to-Work Planner</div>
+        <div class="rd num">Sheets</div>
+      </div>
+      <div class="rm-row">
+        <div class="dot"></div>
+        <div class="rt">NICU Parent Journal</div>
+        <div class="rd num">Printable</div>
+      </div>
+      <div class="rm-row">
+        <div class="dot"></div>
+        <div class="rt">Preschool Prep Checklist (3–5y)</div>
+        <div class="rd num">Sheets / Printable</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>Shop: LittleMilestoneCo · Built product-by-product in one working session</footer>
+
+</div>
