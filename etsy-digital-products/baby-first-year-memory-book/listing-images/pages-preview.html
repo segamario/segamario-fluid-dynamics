@@ -1,0 +1,36 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:2000px; height:2000px; overflow:hidden; }
+  body {
+    font-family: 'Liberation Sans', Helvetica, Arial, sans-serif;
+    background: #FFF8F5;
+    position: relative;
+  }
+  .blob { position:absolute; border-radius:50%; opacity:.5; }
+  .b1 { width:440px; height:440px; background:#D9F2E6; top:-150px; right:-130px; }
+  .b2 { width:380px; height:380px; background:#E6DFF7; bottom:-140px; left:-110px; }
+
+  .eyebrow { position:absolute; top:90px; left:0; right:0; text-align:center; font-size:24px; letter-spacing:4px; color:#E888AC; font-weight:bold; }
+  .title { position:absolute; top:130px; left:0; right:0; text-align:center; font-family:Georgia,'Liberation Serif',serif; font-size:80px; color:#4A4A4A; font-weight:bold; }
+  .subtitle { position:absolute; top:238px; left:0; right:0; text-align:center; font-size:28px; color:#6a6a6a; }
+
+  .grid { position:absolute; top:340px; left:110px; right:110px; bottom:110px; display:grid; grid-template-columns:repeat(3,1fr); gap:40px; }
+  .cell { border-radius:18px; overflow:hidden; box-shadow:0 16px 36px rgba(90,70,90,.14); border:6px solid #fff; background:#fff; }
+  .cell img { width:100%; display:block; }
+</style></head>
+<body>
+  <div class="blob b1"></div><div class="blob b2"></div>
+  <div class="eyebrow">PEEK INSIDE</div>
+  <div class="title">24 Pages to Fill With Love</div>
+  <div class="subtitle">Birth details, monthly check-ins, firsts, letters, hand &amp; footprints, and more</div>
+
+  <div class="grid">
+    <div class="cell"><img src="pg_cover.png"></div>
+    <div class="cell"><img src="pg_baby-details.png"></div>
+    <div class="cell"><img src="pg_family-tree.png"></div>
+    <div class="cell"><img src="pg_month4.png"></div>
+    <div class="cell"><img src="pg_handprints.png"></div>
+    <div class="cell"><img src="pg_birthday.png"></div>
+  </div>
+</body></html>

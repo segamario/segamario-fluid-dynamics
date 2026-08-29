@@ -1,0 +1,61 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:2000px; height:2000px; overflow:hidden; }
+  body {
+    font-family: 'Liberation Sans', Helvetica, Arial, sans-serif;
+    background: #F6F4F7;
+    position: relative;
+  }
+  .blob { position:absolute; border-radius:50%; opacity:.55; }
+  .b1 { width:420px; height:420px; background:#D7E5DA; top:-140px; left:-110px; }
+  .b2 { width:380px; height:380px; background:#D7E1EC; bottom:-130px; right:-100px; }
+
+  .eyebrow {
+    position:absolute; top:120px; left:0; right:0; text-align:center;
+    font-size:20px; letter-spacing:5px; color:#C79FB0; font-weight:600;
+  }
+  .title {
+    position:absolute; top:180px; left:0; right:0; text-align:center;
+    font-family: Georgia, 'Liberation Serif', serif; font-size:84px; color:#454045; font-weight:bold;
+  }
+  .subtitle {
+    position:absolute; top:290px; left:0; right:0; text-align:center;
+    font-size:28px; color:#8D8390; font-style:italic;
+  }
+
+  .frame {
+    position:absolute; top:410px; left:280px; width:1440px; height:1180px;
+    display:flex; gap:44px; justify-content:center;
+  }
+  .card { width:420px; border-radius:18px; box-shadow: 0 30px 60px rgba(69,64,69,.14); overflow:hidden; border:1px solid #ECE7EE; background:#fff; }
+  .card img { width:100%; display:block; }
+  .card.mid { margin-top:-30px; }
+
+  .footer {
+    position:absolute; bottom:90px; left:0; right:0; text-align:center;
+    font-size:22px; color:#8D8390;
+  }
+  .footer .sep { color:#C79FB0; margin: 0 18px; }
+
+  .brand {
+    position:absolute; bottom:40px; left:0; right:0; text-align:center;
+    font-size:15px; letter-spacing:3px; color:#B4A0DE; font-weight:600;
+  }
+</style></head>
+<body>
+  <div class="blob b1"></div><div class="blob b2"></div>
+
+  <div class="eyebrow">A PRINTABLE JOURNAL</div>
+  <div class="title">A NICU Journal</div>
+  <div class="subtitle">For the hardest, most love-filled days</div>
+
+  <div class="frame">
+    <div class="card"><img src="pg_log.png"></div>
+    <div class="card mid"><img src="pg_cover.png"></div>
+    <div class="card"><img src="pg_milestones.png"></div>
+  </div>
+
+  <div class="footer">Instant Download<span class="sep">·</span>16 Pages<span class="sep">·</span>Gentle, Not Prescriptive</div>
+  <div class="brand">LITTLE MILESTONE CO.</div>
+</body></html>

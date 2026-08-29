@@ -1,0 +1,47 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:3360px; height:840px; overflow:hidden; }
+  body {
+    font-family: 'Liberation Sans', Helvetica, Arial, sans-serif;
+    background: linear-gradient(100deg, #FDE9F0 0%, #F3E9FB 40%, #E9F3FB 70%, #E3F3EC 100%);
+    position: relative;
+  }
+  .blob { position:absolute; border-radius:50%; opacity:.55; }
+  .b1 { width:520px; height:520px; background:#FBE192; top:-180px; left:-140px; }
+  .b2 { width:420px; height:420px; background:#AFD3EF; bottom:-160px; left:260px; opacity:.45; }
+  .b3 { width:480px; height:480px; background:#F4AFC9; top:-160px; right:-120px; }
+  .b4 { width:400px; height:400px; background:#AEE4C9; bottom:-160px; right:300px; opacity:.45; }
+
+  .sidegroup { position:absolute; top:50%; transform:translateY(-50%); font-size:70px; display:flex; gap:36px; }
+  .left { left:150px; }
+  .right { right:150px; }
+
+  .center {
+    position:absolute; top:0; left:880px; width:1600px; height:840px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+  }
+  .brand {
+    font-family: Georgia, 'Liberation Serif', serif;
+    font-size:118px; font-weight:bold; color:#4A4A4A; letter-spacing:1px; white-space:nowrap;
+  }
+  .brand span { color:#E888AC; }
+  .tagline {
+    font-size:34px; color:#6a6a6a; margin-top:22px; letter-spacing:.5px; white-space:nowrap;
+  }
+  .rule {
+    width:120px; height:4px; background:#F4AFC9; border-radius:4px; margin-top:26px;
+  }
+</style></head>
+<body>
+  <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="blob b4"></div>
+
+  <div class="sidegroup left">🍼🌙⭐</div>
+  <div class="sidegroup right">🧸🎈👣</div>
+
+  <div class="center">
+    <div class="brand">Little <span>Milestone</span> Co.</div>
+    <div class="tagline">Sweet, simple planners for pregnancy through toddlerhood</div>
+    <div class="rule"></div>
+  </div>
+</body></html>

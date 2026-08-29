@@ -1,0 +1,106 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { width:2000px; height:2000px; overflow:hidden; }
+  body {
+    font-family: 'Liberation Sans', Helvetica, Arial, sans-serif;
+    background: linear-gradient(135deg, #FDE9F0 0%, #F3E9FB 45%, #E3F3EC 100%);
+    position: relative;
+  }
+  .blob { position:absolute; border-radius:50%; filter: blur(2px); opacity:.55; }
+  .b1 { width:520px; height:520px; background:#FBE192; top:-140px; left:-140px; }
+  .b2 { width:420px; height:420px; background:#AFD3EF; bottom:-120px; right:-100px; }
+  .b3 { width:300px; height:300px; background:#F4AFC9; bottom:120px; left:-80px; opacity:.4;}
+
+  .badge {
+    position:absolute; top:90px; left:50%; transform:translateX(-50%);
+    background:#4A4A4A; color:#fff; letter-spacing:3px; font-size:22px; font-weight:bold;
+    padding:14px 40px; border-radius:40px;
+  }
+  .title {
+    position:absolute; top:170px; left:0; right:0; text-align:center;
+    font-family: Georgia, 'Liberation Serif', serif;
+    font-size:110px; color:#4A4A4A; font-weight:bold; line-height:1.05;
+  }
+  .title span { color:#E888AC; }
+  .subtitle {
+    position:absolute; top:400px; left:0; right:0; text-align:center;
+    font-size:36px; color:#5B5B5B; font-weight:400; letter-spacing:.5px;
+  }
+
+  .frame {
+    position:absolute; top:490px; left:220px; width:1560px; height:920px;
+    background:#fff; border-radius:26px; box-shadow: 0 40px 80px rgba(90,70,90,.22);
+    overflow:hidden; border: 10px solid #fff;
+  }
+  .frame-bar { height:56px; background:#F4E9F7; display:flex; align-items:center; padding:0 24px; gap:10px; }
+  .dot { width:16px; height:16px; border-radius:50%; }
+  .frame-tabs { height:64px; background:#4A4A4A; display:flex; align-items:center; padding:0 30px; gap:8px; }
+  .tab { color:#fff; font-size:20px; padding:10px 22px; border-radius:10px 10px 0 0; opacity:.55; }
+  .tab.active { background:#fff; color:#4A4A4A; font-weight:bold; opacity:1; }
+
+  table { width:100%; border-collapse:collapse; }
+  th { background:#FBE9F1; color:#4A4A4A; font-size:22px; padding:16px 20px; text-align:left; border-bottom:2px solid #F4C9DC; }
+  td { font-size:22px; color:#4A4A4A; padding:16px 20px; border-bottom:1px solid #F1E9F0; }
+  tr:nth-child(even) td { background:#FCF6F9; }
+  .chk { width:30px; height:30px; border-radius:8px; background:#AEE4C9; display:inline-flex; align-items:center; justify-content:center; color:#2F7A4D; font-weight:bold; font-size:18px; }
+  .chk.off { background:#EFEFEF; color:transparent; }
+  .pill { display:inline-block; padding:6px 16px; border-radius:20px; font-size:18px; font-weight:bold; }
+  .pill.mint { background:#D9F2E6; color:#2F7A4D; }
+  .pill.blue { background:#D6E8F7; color:#2b5c82; }
+  .pill.yellow { background:#FFF3CE; color:#8a6d00; }
+
+  .badges {
+    position:absolute; top:1460px; left:0; right:0; display:flex; justify-content:center; gap:36px;
+  }
+  .fbadge {
+    width:330px; background:#fff; border-radius:22px; padding:30px 24px; text-align:center;
+    box-shadow: 0 18px 40px rgba(90,70,90,.14);
+  }
+  .fbadge .emoji { font-size:56px; }
+  .fbadge .label { font-size:26px; color:#4A4A4A; font-weight:bold; margin-top:10px; }
+
+  .ribbon {
+    position:absolute; bottom:60px; left:0; right:0; text-align:center;
+    font-size:30px; color:#4A4A4A; font-weight:bold; letter-spacing:1px;
+  }
+  .ribbon .sep { color:#E888AC; margin:0 18px; }
+</style></head>
+<body>
+  <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+
+  <div class="badge">GOOGLE SHEETS DIGITAL TRACKER</div>
+  <div class="title">Toddler Potty<br><span>Training</span> Tracker</div>
+  <div class="subtitle">A calm, encouraging companion for potty training ages 2–4</div>
+
+  <div class="frame">
+    <div class="frame-bar">
+      <div class="dot" style="background:#F4AFC9"></div>
+      <div class="dot" style="background:#FBE192"></div>
+      <div class="dot" style="background:#AEE4C9"></div>
+    </div>
+    <div class="frame-tabs">
+      <div class="tab">Readiness</div>
+      <div class="tab active">Daily Potty Log</div>
+      <div class="tab">Reward Chart</div>
+      <div class="tab">Milestones</div>
+      <div class="tab">Dashboard</div>
+    </div>
+    <table>
+      <tr><th style="width:12%">Day</th><th style="width:18%">Date</th><th style="width:18%">Successes</th><th style="width:18%">Accidents</th><th style="width:34%">Notes</th></tr>
+      <tr><td>8</td><td>2026-01-08</td><td><span class="pill mint">4</span></td><td>1</td><td>Told us before going — first time!</td></tr>
+      <tr><td>9</td><td>2026-01-09</td><td><span class="pill mint">5</span></td><td>0</td><td><span class="pill yellow">Dry all day 🎉</span></td></tr>
+      <tr><td>10</td><td>2026-01-10</td><td><span class="pill mint">3</span></td><td>2</td><td>Rough afternoon, low pressure reset</td></tr>
+      <tr><td>11</td><td>2026-01-11</td><td><span class="pill mint">5</span></td><td>0</td><td><span class="pill blue">Stayed dry through nap</span></td></tr>
+    </table>
+  </div>
+
+  <div class="badges">
+    <div class="fbadge"><div class="emoji">✅</div><div class="label">Readiness Checklist</div></div>
+    <div class="fbadge"><div class="emoji">⭐</div><div class="label">Reward Chart</div></div>
+    <div class="fbadge"><div class="emoji">📍</div><div class="label">Accident Patterns</div></div>
+    <div class="fbadge"><div class="emoji">🎉</div><div class="label">Milestones</div></div>
+  </div>
+
+  <div class="ribbon">9 Editable Tabs<span class="sep">•</span>Instant Download<span class="sep">•</span>Phone &amp; Desktop Ready</div>
+</body></html>
